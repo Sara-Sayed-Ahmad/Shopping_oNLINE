@@ -6,6 +6,11 @@ using Microsoft.EntityFrameworkCore.SqlServer;
 using System.Security;
 using Microsoft.Extensions.DependencyInjection;
 using ShoppingFinity.Repository;
+using ShoppingFinity.Configration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +31,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<ShoppingIRepository, Shopping_Repository>();
+builder.Services.AddTransient<IAuthentication_Authorization, Authentication_Authorization>();
+builder.Services.AddTransient<ShoppingFinity.Configration.JWTConfig>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+//builder.Services.Configure<JWTConfig>(builder.Configuration.GetSection("JWTConfig"));
 
 //add ConfigureServices
 builder.Services
@@ -44,6 +53,26 @@ builder.Services
     .AddEntityFrameworkStores<SystemDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
+}).AddJwtBearer(jwt => {
+    var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JWTConfig:Secret").Value);
+
+    jwt.SaveToken = true;
+    jwt.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = false
+    };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -57,6 +86,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.UseAuthorization();
 
