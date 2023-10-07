@@ -23,5 +23,23 @@ namespace ShoppingFinity.Controllers
 
             return Ok(user);
         }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            await _Autentication.ConfirmEmail(userId, token);
+
+            return Ok("Email is confirmed");
+        }
+
+        [HttpPost("LoginUser")]
+        public async Task<IActionResult> AuthenticationUser(AuthenticateRequest user)
+        {
+            var userLogin = await _Autentication.LoginUser(user);
+
+            if(user == null)
+                NotFound();
+            return Ok(userLogin);
+        }
     }
 }

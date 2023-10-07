@@ -1,0 +1,58 @@
+﻿using AutoMapper;
+using ShoppingFinity.Model;
+using ShoppingFinity.Model.DTOs;
+using ShoppingFinity.Model.GetDTOs;
+
+namespace ShoppingFinity.Helper
+{
+    public class AutoMapper :Profile
+    {
+        public AutoMapper() 
+        {
+            //User -> UserDTO
+            CreateMap<User, UserDTO>().ReverseMap();
+
+            //Cart -> CartDTO
+            CreateMap<Cart, CartDTO>().ReverseMap();
+
+            //CartItem -> CartItem
+            CreateMap<CartItem, CartItemDTO>().ReverseMap();
+
+            //Category -> CategoryDTO
+            CreateMap<Category, CategoryDTO>().ReverseMap();
+
+            //DetailsCategory -> DetailsCategoryDTO
+            CreateMap<DetailsCategory, DetailsCategoryDTO>().ReverseMap();
+
+            //Favorite -> FavoriteDTO
+            CreateMap<Favorite, FavoriteDTO>().ReverseMap();
+
+            //Images -> ImagesDTO
+            CreateMap<Images, ImagesDTO>().ReverseMap();
+
+            //Order -> OrderDTO
+            CreateMap<Order, OrderDTO>().ReverseMap();
+
+            //OrderItem -> OrderItemDTO
+            CreateMap<OrderItem, OrderItemDTO>().ReverseMap();
+
+            //PaymentType -> PaymentTypeDTO
+            CreateMap<PaymentType, PaymentTypeDTO>().ReverseMap();
+
+            //PaymentTypeUser -> PaymentTypeUserDTO
+            CreateMap<PaymentTypeUser, PaymentTypeUserDTO>().ReverseMap();
+
+            //Product -> ProductDTO
+            CreateMap<Product, ProductDTo>().ReverseMap();
+
+            //ProductReview -> ProductReviewDTO
+            CreateMap<ProductReview, ProductReviewDTO>().ReverseMap();
+
+            //SizeProduct -> SizeProductDTO
+            CreateMap<SizeProduct, SizeProductDTO>().ReverseMap();
+
+            //Transaction -> TransactionDTO
+            CreateMap<Transaction, TransactionDTO>().ReverseMap();
+        }
+    }
+}

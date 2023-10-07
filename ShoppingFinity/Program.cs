@@ -2,15 +2,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShoppingFinity;
 using ShoppingFinity.Model;
-using Microsoft.EntityFrameworkCore.SqlServer;
-using System.Security;
 using Microsoft.Extensions.DependencyInjection;
 using ShoppingFinity.Repository;
-using ShoppingFinity.Configration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ShoppingFinity.Repository.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +19,6 @@ builder.Services.AddDbContext<SystemDbContext>(options =>
     });
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 ConfigurationManager configuration = builder.Configuration;
@@ -31,11 +28,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<ShoppingIRepository, Shopping_Repository>();
+builder.Services.AddTransient<ISendEmailService, SendEmailService>();
 builder.Services.AddTransient<IAuthentication_Authorization, Authentication_Authorization>();
-builder.Services.AddTransient<ShoppingFinity.Configration.JWTConfig>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
-
-//builder.Services.Configure<JWTConfig>(builder.Configuration.GetSection("JWTConfig"));
 
 //add ConfigureServices
 builder.Services
@@ -88,8 +83,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
-app.UseAuthorization();
 
 app.UseAuthorization();
 

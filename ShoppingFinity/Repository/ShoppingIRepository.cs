@@ -1,4 +1,5 @@
-﻿using ShoppingFinity.Model.DTOs;
+﻿using ShoppingFinity.Model.AddDTOs;
+using ShoppingFinity.Model.DTOs;
 
 namespace ShoppingFinity.Repository
 {
@@ -7,5 +8,9 @@ namespace ShoppingFinity.Repository
         Task<List<UserDTO>> GetAllUsers();
 
         Task<UserDTO> GetUserById(string userId);
+
+        Task AddCategories(AddCategoryDTO dataCategory);
+
+        Task AddDetailsCategory(AddDetailsDTO detailsCategory);
     }
 }
