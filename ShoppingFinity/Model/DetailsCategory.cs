@@ -12,8 +12,12 @@ namespace ShoppingFinity.Model
         public DateTime CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
-
+ 
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+
+        public ICollection<Product> Products { get; set; }
+
+        public List<ProductCategory> ProductCategories { get; set; }
     }
 }

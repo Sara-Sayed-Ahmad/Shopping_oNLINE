@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ShoppingFinity.Repository.Service;
+using ShoppingFinity.Repository.Image;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<ShoppingIRepository, Shopping_Repository>();
 builder.Services.AddTransient<ISendEmailService, SendEmailService>();
+builder.Services.AddTransient<IFileImages, FileImages>();
 builder.Services.AddTransient<IAuthentication_Authorization, Authentication_Authorization>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

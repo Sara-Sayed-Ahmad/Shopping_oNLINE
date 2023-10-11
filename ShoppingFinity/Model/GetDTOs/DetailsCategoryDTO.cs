@@ -11,5 +11,7 @@
         public DateTime? UpdatedAt { get; set; }
 
         public int CategoryId { get; set; }
+
+        public List<ProductCategoryDTO> ProductCategories { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace ShoppingFinity.Controllers
             _Repository = repository;
         }
 
-        [HttpGet("Users")]
+        [HttpGet("GetUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _Repository.GetAllUsers();

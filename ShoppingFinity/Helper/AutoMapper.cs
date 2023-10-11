@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using ShoppingFinity.Migrations;
 using ShoppingFinity.Model;
+using ShoppingFinity.Model.AddDTOs;
 using ShoppingFinity.Model.DTOs;
 using ShoppingFinity.Model.GetDTOs;
 
@@ -53,6 +55,12 @@ namespace ShoppingFinity.Helper
 
             //Transaction -> TransactionDTO
             CreateMap<Transaction, TransactionDTO>().ReverseMap();
+
+            //ProductCategory -> ProductCategoryDTO
+            CreateMap<ProductCategory, ProductCategoryDTO>().ReverseMap();
+
+            //Product -> AddProduct
+            CreateMap<AddProductDTO, Product>().ForMember(dest => dest.ProductCategories, opt => opt.MapFrom(src => src.DetailsId.Select(id => new ProductCategory { DetailsId = id })));
         }
     }
 }

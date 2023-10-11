@@ -39,5 +39,7 @@
         public List<SizeProductDTO> SizeProducts { get; set; }
 
         public List<ProductReviewDTO> ProductReviews { get; set; }
+
+        public List<ProductCategoryDTO> ProductCategories { get; set; }
     }
 }

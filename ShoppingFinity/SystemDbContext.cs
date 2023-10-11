@@ -20,6 +20,7 @@ namespace ShoppingFinity
         public DbSet<SizeProduct> SizeProducts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<DetailsCategory> DetailsCategories { get; set; }
+        public DbSet<ProductCategory> productCategories { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<PaymentType> PaymentTypes { get; set; }
@@ -275,6 +276,27 @@ namespace ShoppingFinity
             modelBuilder.Entity<DetailsCategory>()
                 .HasOne(c => c.Category)
                 .WithMany(dc => dc.DetailsCategories);
+
+            //RT.15 Product and DetailsCategory: many to many
+            modelBuilder.Entity<Product>()
+                .HasMany(dc => dc.DetailsCategories)
+                .WithMany(p => p.Products)
+                .UsingEntity<ProductCategory>(
+                    pd => pd
+                        .HasOne(de => de.DetailsCategory)
+                        .WithMany(pr => pr.ProductCategories)
+                        .HasForeignKey(dp => dp.DetailsId),
+                    pd => pd
+                        .HasOne(p => p.Product)
+                        .WithMany(pc => pc.ProductCategories)
+                        .HasForeignKey(pro => pro.ProductId)
+                        //.OnDelete(DeleteBehavior.ClientCascade),
+                        .OnDelete(DeleteBehavior.Restrict),
+                    pd =>
+                            {
+                                pd.HasKey(pdc => new { pdc.ProductId, pdc.DetailsId });
+                            }
+                    );
         }
     }
 }

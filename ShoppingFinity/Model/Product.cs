@@ -38,11 +38,15 @@ namespace ShoppingFinity.Model
 
         public ICollection<Cart> Carts { get; set; }
 
+        public ICollection<DetailsCategory> DetailsCategories { get; set; }
+
         public List<Favorite> Favorites { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
 
         public List<CartItem> CartItems { get; set; }
+
+        public List<ProductCategory> ProductCategories { get; set; }
 
         public List<Images> Images { get; set; }
 
