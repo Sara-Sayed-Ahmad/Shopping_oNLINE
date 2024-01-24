@@ -12,8 +12,8 @@
 
         public DateTime? UpdatedAt { get; set; }
 
-        public List<Product> Products { get; set; }
+        public List<ProductDTo> Products { get; set; }
 
-        public List<DetailsCategory> DetailsCategories { get; set; }
+        public List<DetailsCategoryDTO> DetailsCategories { get; set; }
     }
 }

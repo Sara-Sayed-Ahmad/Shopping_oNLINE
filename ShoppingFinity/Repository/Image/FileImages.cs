@@ -2,6 +2,8 @@
 using ShoppingFinity.Model.AddDTOs;
 using ShoppingFinity.Model;
 using System.Collections.Generic;
+using ShoppingFinity.Model.GetDTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShoppingFinity.Repository.Image
 {
@@ -16,6 +18,7 @@ namespace ShoppingFinity.Repository.Image
             _mapper = mapper;
         }
         
+        //Upload Images for product by admin
         public async Task<List<string>> UploadImage(AddImageDTO image)
         {
             List<string> ImageName = new List<string>(); 
@@ -27,77 +30,50 @@ namespace ShoppingFinity.Repository.Image
                     var extension = file.FileName;
                     ImageName.Add(extension);
 
-                    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload");
+                    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Upload");
 
                     if (!Directory.Exists(imagePath))
                     {
                         Directory.CreateDirectory(imagePath);
                     }
 
-                    var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "upload", extension);
+                    var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Upload", extension);
 
                     using (var stream = new FileStream(exactpath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
                     }
 
-                    var newImage = new Images
-                    {
-                        ImageName = extension,
-                        ProductId = image.ProductId,
-                        Color = image.Color,
-                        CreatedAt = image.CreatedAt
-                    };
+                    var product = await _context.Products.Where(x => x.ProductId == image.ProductId).FirstOrDefaultAsync();
 
-                    _context.Images.Add(newImage);
+                    if (product != null)
+                    {
+                        var newImage = new Images
+                        {
+                            ImageName = extension,
+                            ProductId = image.ProductId,
+                            Color = image.Color,
+                            CreatedAt = image.CreatedAt
+                        };
+                        _context.Images.Add(newImage);
+                    }
+
                 }
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.WriteLine("Error: " + ex.Message);
             }
-            //string ImageName = "";
-
-            //try
-            //{
-            //    var extension = image.Image.FileName;
-            //    ImageName = extension;
-
-            //    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload");
-                
-            //    if (!Directory.Exists(imagePath))
-            //    {
-            //        Directory.CreateDirectory(imagePath);
-            //    }
-
-            //    var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "upload", ImageName);
-
-            //    using (var stream = new FileStream(exactpath, FileMode.Create))
-            //    {
-            //        await image.Image.CopyToAsync(stream);
-            //    }
-
-            //    var newImage = new List<Images>
-            //    {
-            //        new Images
-            //        {
-            //            ImageName = ImageName,
-            //            ProductId = image.ProductId,
-            //            Color = image.Color,
-            //            CreatedAt = image.CreatedAt
-            //        }
-            //    };
-
-            //    _context.Images.AddRange(newImage);
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch(Exception ex)
-            //{
-            //    Console.WriteLine("Error: " + ex.Message);
-            //}
 
             return ImageName;
+        }
+
+        public async Task<List<ImagesDTO>> GetImageById(int idProduct)
+        {
+            var image = await _context.Images.Where(x => x.ProductId == idProduct).ToListAsync();
+            
+            return _mapper.Map<List<ImagesDTO>>(image);
         }
     }
 }

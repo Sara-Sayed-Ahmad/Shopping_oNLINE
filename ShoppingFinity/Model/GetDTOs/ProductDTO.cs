@@ -12,13 +12,9 @@
 
         public float Price { get; set; }
 
-        public float DiscountPercentage { get; set; }
-
         public int Quantity { get; set; }
 
         public bool IsAvaliable { get; set; }
-
-        public DateTime? DiscountEndDate { get; set; }
 
         public int CountOrder { get; set; }
 
@@ -31,8 +27,6 @@
         public List<FavoriteDTO> Favorites { get; set; }
 
         public List<OrderItemDTO> OrderItems { get; set; }
-
-        public List<CartItemDTO> CartItems { get; set; }
 
         public List<ImagesDTO> Images { get; set; }
 

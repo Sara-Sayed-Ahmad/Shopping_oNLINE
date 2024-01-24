@@ -21,8 +21,7 @@ namespace ShoppingFinity
         public DbSet<Category> Categories { get; set; }
         public DbSet<DetailsCategory> DetailsCategories { get; set; }
         public DbSet<ProductCategory> productCategories { get; set; }
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
         public DbSet<PaymentType> PaymentTypes { get; set; }
         public DbSet<PaymentTypeUser> PaymentTypeUsers { get; set; }
         public DbSet<ProductReview> ProductReviews { get; set; }
@@ -58,18 +57,17 @@ namespace ShoppingFinity
                 p.Property(p => p.ProductName).HasColumnType("varchar(400)").IsRequired();
                 p.Property(p => p.Description).HasColumnType("varchar(550)").IsRequired();
                 p.Property(p => p.Price).HasColumnType("float").IsRequired();
-                p.Property(p => p.DiscountPercentage).HasColumnType("float").HasDefaultValue(0.0);
                 p.Property(p => p.IsAvaliable).HasColumnType("bit").IsRequired();
                 p.Property(p => p.Quantity).HasDefaultValue(1).IsRequired();
                 p.Property(p => p.CountOrder).HasDefaultValue(0);
                 p.Property(p => p.Season).HasColumnType("varchar(50)").IsRequired();
-                p.Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
+                p.Property(p => p.CreatedAt).HasDefaultValueSql("CONVERT(DATE, GETDATE())");
             });
 
             //tb.3 Orders
             modelBuilder.Entity<Order>(o =>
             {
-                o.Property(o => o.OrderDate).HasDefaultValueSql("GETDATE()").IsRequired();
+                o.Property(o => o.OrderDate).HasDefaultValueSql("CONVERT(DATE, GETDATE())").IsRequired();
                 o.Property(o => o.PaymentStatus).HasColumnType("varchar(50)").IsRequired();
                 o.Property(o => o.OrderStatus).HasColumnType("varchar(50)").IsRequired();
                 o.Property(o => o.ShippingType).HasColumnType("varchar(50)").IsRequired();
@@ -77,7 +75,7 @@ namespace ShoppingFinity
                 o.Property(o => o.ShippingFree).HasColumnType("bit").HasDefaultValue(false);
                 o.Property(o => o.TotalAmount).HasColumnType("float");
                 //o.Property(o => o.TrackingNum).ValueGeneratedOnAdd();
-                o.Property(o => o.CreatedAt).HasDefaultValueSql("GETDATE()");
+                o.Property(o => o.CreatedAt).HasDefaultValueSql("CONVERT(DATE, GETDATE())");
             });
 
             //tb.4 SizeProduct
@@ -91,7 +89,7 @@ namespace ShoppingFinity
             {
                 img.Property(img => img.ImageName).HasColumnType("varchar(150)").IsRequired();
                 img.Property(img => img.Color).HasColumnType("varchar(50)").IsRequired();
-                img.Property(img => img.CreatedAt).HasDefaultValueSql("GETDATE()").IsRequired();
+                img.Property(img => img.CreatedAt).HasDefaultValueSql("CONVERT(DATE, GETDATE())").IsRequired();
             });
 
             //tb.6 Category 
@@ -99,31 +97,32 @@ namespace ShoppingFinity
             {
                 c.Property(c => c.CategoryName).HasColumnType("varchar(100)").IsRequired();
                 c.Property(c => c.Description).HasColumnType("varchar(550)").IsRequired();
-                c.Property(c => c.CreatedAt).HasDefaultValueSql("GETDATE()");
+                c.Property(c => c.CreatedAt).HasDefaultValueSql("CONVERT(DATE, GETDATE())");
             });
 
             //tb.7 DetailsCategory
             modelBuilder.Entity<DetailsCategory>(dc =>
             {
                 dc.Property(dc => dc.DetailName).HasColumnType("varchar(100)").IsRequired();
-                dc.Property(dc => dc.CreatedAt).HasDefaultValueSql("GETDATE()");
+                dc.Property(dc => dc.CreatedAt).HasDefaultValueSql("CONVERT(DATE, GETDATE())");
             });
 
             //tb.8 ProductReview
             modelBuilder.Entity<ProductReview>(pr =>
             {
-                pr.Property(pr => pr.DateReview).HasDefaultValueSql("GETDATE()");
+                pr.Property(pr => pr.DateReview).HasDefaultValueSql("CONVERT(DATE, GETDATE())");
                 pr.Property(pr => pr.Title).HasColumnType("varchar(50)").IsRequired();
                 pr.Property(pr => pr.Description).HasColumnType("varchar(550)").IsRequired();
                 pr.Property(pr => pr.Rating).HasDefaultValue(0);
 
             });
 
-            //tb.9 Cart
-            modelBuilder.Entity<Cart>(ca =>
+            //tb.9 Discount
+            modelBuilder.Entity<Discount>(di =>
             {
-                ca.Property(ca => ca.IsCheck).HasColumnType("bit");
-                ca.Property(ca => ca.CreatedAt).HasDefaultValueSql("GETDATE()");
+                di.Property(di => di.DiscontType).HasColumnType("varchar(50)").IsRequired();
+                di.Property(di => di.EndDate).HasDefaultValueSql("CONVERT(DATE, GETDATE())");
+                di.Property(di => di.Percentage).HasColumnType("float");
             });
 
             //tb.10 PaymentType
@@ -153,12 +152,12 @@ namespace ShoppingFinity
                     f => f
                         .HasOne(u => u.User)
                         .WithMany(fa => fa.Favorites)
-                        .HasForeignKey(fa => fa.Id),
+                        .HasForeignKey(fa => fa.UserId),
                     //.OnDelete(DeleteBehavior.ClientCascade),
                     f =>
                     {
-                        f.Property(fav => fav.CreatedAt).HasDefaultValueSql("GETDATE()");
-                        f.HasKey(fav => new { fav.Id, fav.ProductId });
+                        f.Property(fav => fav.CreatedAt).HasDefaultValueSql("CONVERT(DATE, GETDATE())");
+                        f.HasKey(fav => new { fav.UserId, fav.ProductId });
                     }
             );
 
@@ -174,10 +173,10 @@ namespace ShoppingFinity
                     pau => pau
                         .HasOne(u => u.User)
                         .WithMany(pay => pay.PaymentTypeUsers)
-                        .HasForeignKey(payUs => payUs.Id),
+                        .HasForeignKey(payUs => payUs.UserId),
                     pau =>
                     {
-                        pau.HasKey(p => new { p.Id, p.PaymentId });
+                        pau.HasKey(p => new { p.UserId, p.PaymentId });
                     }
             );
 
@@ -186,10 +185,10 @@ namespace ShoppingFinity
                 .HasOne(u => u.User)
                 .WithMany(pr => pr.ProductReviews);
 
-            //RT.4 User and Cart: one to many
-            modelBuilder.Entity<Cart>()
-                .HasOne(u => u.User)
-                .WithMany(ca => ca.Carts);
+            //RT.4 Discount and Order: one to many
+            modelBuilder.Entity<Order>()
+                .HasOne(d => d.Discount)
+                .WithMany(or => or.Orders);
 
             //RT.5 User and Order: one to many
             modelBuilder.Entity<Order>()
@@ -218,33 +217,37 @@ namespace ShoppingFinity
                     {
                         or.Property(or => or.ItemPrice).HasColumnType("float").IsRequired();
                         or.Property(or => or.SubTotal).HasColumnType("float").IsRequired();
-                        or.Property(or => or.DiscountType).HasColumnType("varchar(50)");
                         or.Property(or => or.Quantity).IsRequired();
                         or.HasKey(ord => new { ord.ProductId, ord.OrderId });
                     }
             );
 
-            //RT.8 Product and Cart: many to many
-            modelBuilder.Entity<Product>()
-                .HasMany(c => c.Carts)
-                .WithMany(p => p.Products)
-                .UsingEntity<CartItem>(
-                    ca => ca
-                        .HasOne(c => c.Cart)
-                        .WithMany(ca => ca.CartItems)
-                        .HasForeignKey(cai => cai.CartId),
-                    ca => ca
-                        .HasOne(p => p.Product)
-                        .WithMany(ca => ca.CartItems)
-                        .HasForeignKey(cai => cai.ProductId),
-                    ca =>
-                    {
-                        ca.Property(ca => ca.Quantity).HasDefaultValue(0);
-                        ca.Property(ca => ca.ItemPrice).HasColumnType("float").IsRequired();
-                        ca.Property(ca => ca.SubTotal).HasColumnType("float").IsRequired();
-                        ca.HasKey(cai => new { cai.ProductId, cai.CartId });
-                    }
-             );
+            //RT.8 Payment Type and Order: one to many
+            modelBuilder.Entity<Order>()
+                .HasOne(p => p.PaymentType)
+                .WithMany(o => o.Orders)
+                .HasForeignKey(p => p.PaymentId);
+
+            //modelBuilder.Entity<Product>()
+            //    .HasMany(c => c.Carts)
+            //    .WithMany(p => p.Products)
+            //    .UsingEntity<CartItem>(
+            //        ca => ca
+            //            .HasOne(c => c.Cart)
+            //            .WithMany(ca => ca.CartItems)
+            //            .HasForeignKey(cai => cai.CartId),
+            //        ca => ca
+            //            .HasOne(p => p.Product)
+            //            .WithMany(ca => ca.CartItems)
+            //            .HasForeignKey(cai => cai.ProductId),
+            //        ca =>
+            //        {
+            //            ca.Property(ca => ca.Quantity).HasDefaultValue(0);
+            //            ca.Property(ca => ca.ItemPrice).HasColumnType("float").IsRequired();
+            //            ca.Property(ca => ca.SubTotal).HasColumnType("float").IsRequired();
+            //            ca.HasKey(cai => new { cai.ProductId, cai.CartId });
+            //        }
+            // );
 
             //RT.9 Product and Image: one to many
             modelBuilder.Entity<Images>()

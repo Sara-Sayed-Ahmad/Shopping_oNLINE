@@ -8,6 +8,8 @@ namespace ShoppingFinity.Model.DTOs
 
         public string LastName { get; set; }
 
+        public string Email { get; set; }
+
         public string? Address { get; set; }
 
         public string? Country { get; set; }
@@ -33,8 +35,6 @@ namespace ShoppingFinity.Model.DTOs
         public List<PaymentTypeUserDTO> PaymentTypeUsers { get; set; }
 
         public List<ProductReviewDTO> ProductReviews { get; set; }
-
-        public List<CartDTO> Carts { get; set; }
 
         public List<OrderDTO> Orders { get; set; }
 

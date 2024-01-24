@@ -4,11 +4,13 @@
     {
         public int OrderId { get; set; }
 
-        public string Id { get; set; }
+        public string UserId { get; set; }
 
         public DateTime OrderDate { get; set; }
 
         public int PaymentId { get; set; }
+
+        public int DiscountId { get; set; }
 
         public string PaymentStatus { get; set; }
 
@@ -30,8 +32,8 @@
 
         public DateTime? UpdatedAt { get; set; }
 
-        public List<OrderItem> OrderItems { get; set; }
+        public List<OrderItemDTO> OrderItems { get; set; }
 
-        public List<Transaction> Transactions { get; set; }
+        public List<TransactionDTO> Transactions { get; set; }
     }
 }

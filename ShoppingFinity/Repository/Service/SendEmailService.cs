@@ -1,5 +1,4 @@
-﻿using MimeKit;
-using ShoppingFinity.Model.Account;
+﻿using ShoppingFinity.Model.Account;
 using System.Net;
 using System.Net.Mail;
 

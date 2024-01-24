@@ -14,12 +14,6 @@ namespace ShoppingFinity.Helper
             //User -> UserDTO
             CreateMap<User, UserDTO>().ReverseMap();
 
-            //Cart -> CartDTO
-            CreateMap<Cart, CartDTO>().ReverseMap();
-
-            //CartItem -> CartItem
-            CreateMap<CartItem, CartItemDTO>().ReverseMap();
-
             //Category -> CategoryDTO
             CreateMap<Category, CategoryDTO>().ReverseMap();
 
@@ -28,6 +22,9 @@ namespace ShoppingFinity.Helper
 
             //Favorite -> FavoriteDTO
             CreateMap<Favorite, FavoriteDTO>().ReverseMap();
+
+            //Discount -> DiscountDTO
+            CreateMap<Discount, DiscountDTO>().ReverseMap();
 
             //Images -> ImagesDTO
             CreateMap<Images, ImagesDTO>().ReverseMap();

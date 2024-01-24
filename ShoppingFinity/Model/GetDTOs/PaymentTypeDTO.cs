@@ -7,8 +7,8 @@
 
         public int CountNumberOrder { get; set; }
 
-        public List<Order> Orders { get; set; }
+        public List<OrderDTO> Orders { get; set; }
 
-        public List<PaymentTypeUser> PaymentTypeUsers { get; set; }
+        public List<PaymentTypeUserDTO> PaymentTypeUsers { get; set; }
     }
 }

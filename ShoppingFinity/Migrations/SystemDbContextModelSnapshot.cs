@@ -155,65 +155,6 @@ namespace ShoppingFinity.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ShoppingFinity.Model.Cart", b =>
-                {
-                    b.Property<int>("CartId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsCheck")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CartId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("ShoppingFinity.Model.CartItem", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("ItemPrice")
-                        .HasColumnType("float");
-
-                    b.Property<int>("Quantity")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<double>("SubTotal")
-                        .HasColumnType("float");
-
-                    b.HasKey("ProductId", "CartId");
-
-                    b.HasIndex("CartId");
-
-                    b.ToTable("CartItems");
-                });
-
             modelBuilder.Entity("ShoppingFinity.Model.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -229,7 +170,7 @@ namespace ShoppingFinity.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CONVERT(DATE, GETDATE())");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -257,7 +198,7 @@ namespace ShoppingFinity.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CONVERT(DATE, GETDATE())");
 
                     b.Property<string>("DetailName")
                         .IsRequired()
@@ -273,9 +214,34 @@ namespace ShoppingFinity.Migrations
                     b.ToTable("DetailsCategories");
                 });
 
+            modelBuilder.Entity("ShoppingFinity.Model.Discount", b =>
+                {
+                    b.Property<int>("DiscountId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DiscountId"));
+
+                    b.Property<string>("DiscontType")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("EndDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("CONVERT(DATE, GETDATE())");
+
+                    b.Property<double>("Percentage")
+                        .HasColumnType("float");
+
+                    b.HasKey("DiscountId");
+
+                    b.ToTable("Discounts");
+                });
+
             modelBuilder.Entity("ShoppingFinity.Model.Favorite", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ProductId")
@@ -284,12 +250,12 @@ namespace ShoppingFinity.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CONVERT(DATE, GETDATE())");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id", "ProductId");
+                    b.HasKey("UserId", "ProductId");
 
                     b.HasIndex("ProductId");
 
@@ -311,7 +277,7 @@ namespace ShoppingFinity.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CONVERT(DATE, GETDATE())");
 
                     b.Property<string>("ImageName")
                         .IsRequired()
@@ -341,19 +307,18 @@ namespace ShoppingFinity.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CONVERT(DATE, GETDATE())");
 
                     b.Property<DateTime?>("DeliveryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DiscountId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CONVERT(DATE, GETDATE())");
 
                     b.Property<string>("OrderStatus")
                         .IsRequired()
@@ -365,9 +330,6 @@ namespace ShoppingFinity.Migrations
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
-
-                    b.Property<int>("PaymentTypePaymentId")
-                        .HasColumnType("int");
 
                     b.Property<double>("ShippingFee")
                         .ValueGeneratedOnAdd()
@@ -398,7 +360,9 @@ namespace ShoppingFinity.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("PaymentTypePaymentId");
+                    b.HasIndex("DiscountId");
+
+                    b.HasIndex("PaymentId");
 
                     b.HasIndex("UserId");
 
@@ -412,9 +376,6 @@ namespace ShoppingFinity.Migrations
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
-
-                    b.Property<string>("DiscountType")
-                        .HasColumnType("varchar(50)");
 
                     b.Property<double>("ItemPrice")
                         .HasColumnType("float");
@@ -456,13 +417,13 @@ namespace ShoppingFinity.Migrations
 
             modelBuilder.Entity("ShoppingFinity.Model.PaymentTypeUser", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("PaymentId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id", "PaymentId");
+                    b.HasKey("UserId", "PaymentId");
 
                     b.HasIndex("PaymentId");
 
@@ -488,19 +449,11 @@ namespace ShoppingFinity.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CONVERT(DATE, GETDATE())");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("varchar(550)");
-
-                    b.Property<DateTime?>("DiscountEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("DiscountPercentage")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(0.0);
 
                     b.Property<bool>("IsAvaliable")
                         .HasColumnType("bit");
@@ -557,15 +510,11 @@ namespace ShoppingFinity.Migrations
                     b.Property<DateTime>("DateReview")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CONVERT(DATE, GETDATE())");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("varchar(550)");
-
-                    b.Property<string>("Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -624,10 +573,6 @@ namespace ShoppingFinity.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
-
-                    b.Property<string>("Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -809,36 +754,6 @@ namespace ShoppingFinity.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShoppingFinity.Model.Cart", b =>
-                {
-                    b.HasOne("ShoppingFinity.Model.User", "User")
-                        .WithMany("Carts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ShoppingFinity.Model.CartItem", b =>
-                {
-                    b.HasOne("ShoppingFinity.Model.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShoppingFinity.Model.Product", "Product")
-                        .WithMany("CartItems")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("ShoppingFinity.Model.DetailsCategory", b =>
                 {
                     b.HasOne("ShoppingFinity.Model.Category", "Category")
@@ -852,15 +767,15 @@ namespace ShoppingFinity.Migrations
 
             modelBuilder.Entity("ShoppingFinity.Model.Favorite", b =>
                 {
-                    b.HasOne("ShoppingFinity.Model.User", "User")
-                        .WithMany("Favorites")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ShoppingFinity.Model.Product", "Product")
                         .WithMany("Favorites")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShoppingFinity.Model.User", "User")
+                        .WithMany("Favorites")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -882,9 +797,15 @@ namespace ShoppingFinity.Migrations
 
             modelBuilder.Entity("ShoppingFinity.Model.Order", b =>
                 {
+                    b.HasOne("ShoppingFinity.Model.Discount", "Discount")
+                        .WithMany("Orders")
+                        .HasForeignKey("DiscountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ShoppingFinity.Model.PaymentType", "PaymentType")
                         .WithMany("Orders")
-                        .HasForeignKey("PaymentTypePaymentId")
+                        .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -893,6 +814,8 @@ namespace ShoppingFinity.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Discount");
 
                     b.Navigation("PaymentType");
 
@@ -920,15 +843,15 @@ namespace ShoppingFinity.Migrations
 
             modelBuilder.Entity("ShoppingFinity.Model.PaymentTypeUser", b =>
                 {
-                    b.HasOne("ShoppingFinity.Model.User", "User")
-                        .WithMany("PaymentTypeUsers")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ShoppingFinity.Model.PaymentType", "PaymentType")
                         .WithMany("PaymentTypeUsers")
                         .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShoppingFinity.Model.User", "User")
+                        .WithMany("PaymentTypeUsers")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1016,11 +939,6 @@ namespace ShoppingFinity.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ShoppingFinity.Model.Cart", b =>
-                {
-                    b.Navigation("CartItems");
-                });
-
             modelBuilder.Entity("ShoppingFinity.Model.Category", b =>
                 {
                     b.Navigation("DetailsCategories");
@@ -1031,6 +949,11 @@ namespace ShoppingFinity.Migrations
             modelBuilder.Entity("ShoppingFinity.Model.DetailsCategory", b =>
                 {
                     b.Navigation("ProductCategories");
+                });
+
+            modelBuilder.Entity("ShoppingFinity.Model.Discount", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ShoppingFinity.Model.Order", b =>
@@ -1049,8 +972,6 @@ namespace ShoppingFinity.Migrations
 
             modelBuilder.Entity("ShoppingFinity.Model.Product", b =>
                 {
-                    b.Navigation("CartItems");
-
                     b.Navigation("Favorites");
 
                     b.Navigation("Images");
@@ -1066,8 +987,6 @@ namespace ShoppingFinity.Migrations
 
             modelBuilder.Entity("ShoppingFinity.Model.User", b =>
                 {
-                    b.Navigation("Carts");
-
                     b.Navigation("Favorites");
 
                     b.Navigation("Orders");

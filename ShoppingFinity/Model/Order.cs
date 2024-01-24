@@ -7,8 +7,11 @@ namespace ShoppingFinity.Model
         [Key]
         public int OrderId { get; set; }
 
-        public string Id { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
+
+        public int DiscountId { get; set; }
+        public Discount Discount { get; set; }
 
         public DateTime OrderDate { get; set; }
 

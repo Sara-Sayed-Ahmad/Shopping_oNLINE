@@ -36,5 +36,16 @@ namespace ShoppingFinity.Controllers
                 NotFound();
             return Ok(DeCategory);
         }
+
+        //Get details category by category id
+        [HttpGet("DetailsByCategoryId")]
+        public async Task<IActionResult> GetDetailsByCategory(int id)
+        {
+            var DetailsCategory = await _Repository.GetDetailsByCate(id);
+
+            if (DetailsCategory == null)
+                NotFound();
+            return Ok(DetailsCategory);
+        }
     }
 }

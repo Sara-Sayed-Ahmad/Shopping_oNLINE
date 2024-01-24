@@ -7,7 +7,7 @@ namespace ShoppingFinity.Model
         [Key]
         public int TransactionId { get; set; }
 
-        public string Id { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
 
         public int OrderId { get; set; }

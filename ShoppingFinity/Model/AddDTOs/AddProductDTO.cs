@@ -16,8 +16,6 @@ namespace ShoppingFinity.Model.AddDTOs
         [Required(ErrorMessage ="Price of product is required")]
         public float Price { get; set; }
 
-        public float DiscountPercentage { get; set; }
-
         [Required(ErrorMessage ="Quantity of product is required")]
         public int Quantity { get; set; }
 
@@ -29,7 +27,7 @@ namespace ShoppingFinity.Model.AddDTOs
         [Required(ErrorMessage ="Season is required")]
         public string Season { get; set; }
 
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime CreatedAt { get; set; }
 
         public List<int> DetailsId { get; set; }

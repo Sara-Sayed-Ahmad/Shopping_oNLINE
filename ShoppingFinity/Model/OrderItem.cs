@@ -13,7 +13,5 @@
         public float ItemPrice { get; set; }
 
         public float SubTotal { get; set; }
-
-        public string? DiscountType { get; set; }
     }
 }

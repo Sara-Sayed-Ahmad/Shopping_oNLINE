@@ -9,7 +9,7 @@ namespace ShoppingFinity.Model.AddDTOs
         public string DetailName { get; set; }
 
         [Required(ErrorMessage = "Date for added is required")]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime CreatedAt { get; set; }
 
         [Required(ErrorMessage = "Category Name is required")]

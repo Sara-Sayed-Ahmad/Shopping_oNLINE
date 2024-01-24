@@ -90,7 +90,6 @@ namespace ShoppingFinity.Repository
 
                 //Token
                 var Token = await _userManager.GenerateEmailConfirmationTokenAsync(RegisterUser);
-                //var token = GenerateToken(RegisterUser);
 
                 //Encoded
                 var encodedEmailToken = Encoding.UTF8.GetBytes(Token);
@@ -107,7 +106,6 @@ namespace ShoppingFinity.Repository
                 };
 
                 await _sendEmail.SendEmail(data);
-                // RegisterUser.AuthenticationToken = token;
 
                 // Save the user with the confirmation token
                 await _userManager.UpdateAsync(RegisterUser);
@@ -139,7 +137,6 @@ namespace ShoppingFinity.Repository
         public async Task<string> LoginUser(AuthenticateRequest authenticate)
         {
             var user = _context.User.SingleOrDefault(x => x.Email == authenticate.Email);
-
             var userRoles = await _userManager.GetRolesAsync(user);
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, authenticate.Password))
@@ -163,7 +160,6 @@ namespace ShoppingFinity.Repository
 
             //Generate Token
             var token = GenerateToken(authClaims);
-
             user.AuthenticationToken = token;
 
             return token;

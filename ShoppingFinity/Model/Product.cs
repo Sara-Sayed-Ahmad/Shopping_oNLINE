@@ -16,13 +16,9 @@ namespace ShoppingFinity.Model
 
         public float Price { get; set; }
 
-        public float DiscountPercentage { get; set; }
-
         public int Quantity { get; set; }
 
         public bool IsAvaliable { get; set; }
-
-        public DateTime? DiscountEndDate { get; set; }
 
         public int CountOrder { get; set; }
 
@@ -36,15 +32,11 @@ namespace ShoppingFinity.Model
 
         public ICollection<Order> Orders { get; set; }
 
-        public ICollection<Cart> Carts { get; set; }
-
         public ICollection<DetailsCategory> DetailsCategories { get; set; }
 
         public List<Favorite> Favorites { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
-
-        public List<CartItem> CartItems { get; set; }
 
         public List<ProductCategory> ProductCategories { get; set; }
 
